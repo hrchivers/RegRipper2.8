@@ -3,7 +3,6 @@
 # 
 #
 # Change History
-#   20171118 - updated search terms detection to allow for missing subkeys (H Chivers)
 #   20140730 - updated search terms detection (G. Neives)
 #   20130312 - updated based on data provided by J. Weg
 #   20120507 - modified to remove the traversing function, to only get
@@ -88,17 +87,15 @@ sub getSearchTerms {
 	my @subkeys = ("audio\.gen","gen\.gen","image\.gen","video\.aut","video\.dat","video\.gen","video\.tit");
 	
 	foreach my $sk (@subkeys) {
-        my $gen;
-		if ($gen = $key->get_subkey("Search\.History")->get_subkey($sk)) {
-    		my @vals = $gen->get_list_of_values();
-    		if (scalar(@vals) > 0) {
-    			$count = 1;
-    			::rptMsg($gen->get_name());
-    			::rptMsg("LastWrite: ".gmtime($gen->get_timestamp())." (UTC)");
-    			foreach my $v (@vals) {
-    				next if ($v->get_name() eq "");
-    				::rptMsg("  ".hex2ascii($v->get_name()));
-                }
+		my $gen = $key->get_subkey("Search\.History")->get_subkey($sk);
+		my @vals = $gen->get_list_of_values();
+		if (scalar(@vals) > 0) {
+			$count = 1;
+			::rptMsg($gen->get_name());
+			::rptMsg("LastWrite: ".gmtime($gen->get_timestamp())." (UTC)");
+			foreach my $v (@vals) {
+				next if ($v->get_name() eq "");
+				::rptMsg("  ".hex2ascii($v->get_name()));
 			}
 		}
 	}
